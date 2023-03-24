@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "gpt3-terminal-python"
+version = "0.1.0"
+description = "use gpt3 right at your terminal"
+authors = ["Marcelino Sandroni <marcelino.sandroni@gmail.com>"]
+readme = "README.md"
+packages = [{include = "gpt3_terminal_python"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
