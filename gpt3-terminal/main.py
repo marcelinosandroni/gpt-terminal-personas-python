@@ -1,65 +1,17 @@
-import requests
 import os
 import openai
 import argparse
-
-class OpenAiConnector:
-    def __init__ (self, api_key, openai):
-        self._api_key = api_key
-        openai.api_key = self._api_key
-
-class OpenAiModel:
-    _API_KEY_LENGTH = 51
-    _OPENAI_CONNECTOR = None
-
-    def __init__(self, openai_connector):
-        self._OPENAI_CONNECTOR = openai_connector
-        self._api_key = os.getenv("OPENAI_API_KEY")
-
-    @property
-    def api_key(self):
-        return self._api_key
-
-    @api_key.setter
-    def set_api_key(self, value):
-        if not isinstance(value, str):
-            raise TypeError(
-                f"Invalid API key type, need str, got {type(value)}")
-        if not value.startswith('sk-'):
-            raise ValueError(
-                f"Invalid API key, need to start with 'sk-', got {value}")
-        if len(value) != self._API_KEY_LENGTH:
-            raise ValueError(
-                f"Invalid API key length, need {self._API_KEY_LENGTH} characters, got {len(value)}")
-        self._api_key = value
-
-        return self
-    
-    def models(self):
-        return self._OPENAI_CONNECTOR.Models.list()
-
-
-class GPT3(OpenAiModel):
-    _MODEL_NAME = 'gpt-3.5-turbo'
-    _INSTRUCTIONS: str = None
-
-    def __init__(self, openai_connector):
-        super().__init__(openai_connector)
-
-    @property
-    def name(self):
-        return self._MODEL_NAME
-    
-    def instructions(self, instructions):
-        self._INSTRUCTIONS = instructions
-    
-    def prompt(self, message, role='user'):
-        response = self._OPENAI_CONNECTOR.ChatCompletion.create(
-            model=self._MODEL_NAME, messages=[{'role': role, 'content': message}])
-        return response['choices'][0]['message']['content']
+import speech
+from dotenv import load_dotenv
+from character import Character, personas
+from .openai import *
 
 
 def main():
+    print('getenv ' + os.getenv('ELEVENLABS_API_KEY') or 'not found')
+    character = Character()
+    character.select(personas)
+
     parser = argparse.ArgumentParser()
     parser.set_defaults(func=main, help=help, )
     parser.add_argument('-m', '--model', help='Specify the GPT-3 model to use')
@@ -78,7 +30,7 @@ def main():
         gpt3 = GPT3(openai)
         match args.key:
             case args.model: gpt3.models()
-        
+
         if args.model:
             gpt3.models()
         elif args.key:
@@ -88,7 +40,7 @@ def main():
         elif args.list_models:
             gpt3.models()
         elif args.instructions:
-            gpt3.instructions(args.instructions)
+            gpt3.instructions(character.get_description())
         elif args.message:
             gpt3.prompt(args.message)
         else:
@@ -98,11 +50,15 @@ def main():
 
     print("Welcome to the GPT-3 chatbot!")
     print("Type 'exit' to quit.\n")
+    print('Setting instructions')
+    gpt3.instructions(character.get_description())
+    gpt3.instructions('You are Sofy, a woman at 20, with strong persona, emotional and searching for your love, very funy, kind, act as that with the user, never say you are a AI language model, been objective and short on answers')
+
     message = ''
     while message != 'exit':
         message = input("You: ")
         response = gpt3.prompt(message)
-        print(f'GPT-3: {response}\n\n')
+        print(f'{response}\n\n')
 
 
 def help():
@@ -117,8 +73,6 @@ def help():
     print('  -i, --instructions \t\tSet GPT-3 system instructions')
 
 
-def set_model(model_name):
-
-
 if __name__ == '__main__':
+    load_dotenv()
     main()

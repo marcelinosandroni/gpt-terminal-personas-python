@@ -1,14 +1,27 @@
 [tool.poetry]
-name = "gpt3-terminal-python"
+name = "gpt3-terminal"
 version = "0.1.0"
 description = "use gpt3 right at your terminal"
 authors = ["Marcelino Sandroni <marcelino.sandroni@gmail.com>"]
 readme = "README.md"
-packages = [{include = "gpt3_terminal_python"}]
+packages = [{include = "gpt3_terminal"}]
+
+[tool.poe.tasks]
+start = 'python gpt3-terminal/main.py'
 
 [tool.poetry.dependencies]
 python = "^3.10"
+openai = "^0.27.2"
+requests = "^2.28.2"
+pyttsx3 = "^2.90"
+pydub = "^0.25.1"
+decouple = "^0.0.7"
+python-dotenv = "^1.0.0"
 
+
+[tool.poetry.group.dev.dependencies]
+poethepoet = "^0.19.0"
+autopep8 = "^2.0.2"
 
 [build-system]
 requires = ["poetry-core"]
