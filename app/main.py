@@ -1,13 +1,23 @@
 import os
-import openai
 import argparse
-import speech
+import openai
+import sys
 from dotenv import load_dotenv
-from character import Character, personas
-from .openai import *
+from app.character import *
+from app.ai import *
+# from app.presentation import app
+from app.speech.coquiai_speech import CoquiaiSpeech
+from app.speech.sound import Sound
 
 
 def main():
+    coaquiai = CoquiaiSpeech()
+    sound = Sound()
+    # coaquiai.list_speakers()
+    # audio_url = coaquiai.say('Something new here for me' * 10)
+    # coaquiai.download_file_from_url(audio_url)
+    # sound.play_file('sample.wav')
+    # sys.exit(0)
     print('getenv ' + os.getenv('ELEVENLABS_API_KEY') or 'not found')
     character = Character()
     character.select(personas)
@@ -27,7 +37,7 @@ def main():
 
     try:
         args = parser.parse_args()
-        gpt3 = GPT3(openai)
+        gpt3 = GPT3()
         match args.key:
             case args.model: gpt3.models()
 
@@ -51,14 +61,18 @@ def main():
     print("Welcome to the GPT-3 chatbot!")
     print("Type 'exit' to quit.\n")
     print('Setting instructions')
-    gpt3.instructions(character.get_description())
-    gpt3.instructions('You are Sofy, a woman at 20, with strong persona, emotional and searching for your love, very funy, kind, act as that with the user, never say you are a AI language model, been objective and short on answers')
+    instruction = "Act as a character to the user, been very real and related to the persona attributes, here is your character: " + \
+        character.get_description()
+    gpt3.instructions(instruction)
 
     message = ''
     while message != 'exit':
         message = input("You: ")
         response = gpt3.prompt(message)
-        print(f'{response}\n\n')
+        print(f'\n{response}\n\n')
+        audio_url = coaquiai.say(response)
+        coaquiai.download_file_from_url(audio_url)
+        sound.play_file('sample.wav')
 
 
 def help():

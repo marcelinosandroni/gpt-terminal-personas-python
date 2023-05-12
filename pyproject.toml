@@ -4,10 +4,11 @@ version = "0.1.0"
 description = "use gpt3 right at your terminal"
 authors = ["Marcelino Sandroni <marcelino.sandroni@gmail.com>"]
 readme = "README.md"
-packages = [{include = "gpt3_terminal"}]
+packages = [{include = "app"}]
 
 [tool.poe.tasks]
-start = 'python gpt3-terminal/main.py'
+start = 'python app/main.py'
+server = 'flask --app app/main.py run'
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -17,6 +18,8 @@ pyttsx3 = "^2.90"
 pydub = "^0.25.1"
 decouple = "^0.0.7"
 python-dotenv = "^1.0.0"
+flask = "^2.2.3"
+pyaudio = "^0.2.13"
 
 
 [tool.poetry.group.dev.dependencies]

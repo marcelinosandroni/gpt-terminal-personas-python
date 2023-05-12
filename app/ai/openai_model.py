@@ -1,14 +1,15 @@
 import os
-from openai_connector import OpenAiConnector
+import openai
 
 
 class OpenAiModel:
     _API_KEY_LENGTH = 51
-    _OPENAI_CONNECTOR = None
+    _OPENAI_CHAT: openai.ChatCompletion
 
-    def __init__(self, openai_connector: OpenAiConnector):
-        self._OPENAI_CONNECTOR = openai_connector
+    def __init__(self):
+        self._OPENAI_CHAT = openai.ChatCompletion
         self._api_key = os.getenv("OPENAI_API_KEY")
+        openai.api_key = self._api_key
 
     @property
     def api_key(self):
@@ -30,5 +31,5 @@ class OpenAiModel:
         return self
 
     def models(self):
-        return dir(self._OPENAI_CONNECTOR)
-        return self._OPENAI_CONNECTOR.Models.list()
+        return 'a'
+        # return dir(self._OPENAI_CONNECTOR)

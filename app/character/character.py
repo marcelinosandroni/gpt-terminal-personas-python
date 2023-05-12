@@ -26,16 +26,13 @@ class Character:
 
 
     def select(self, characters):
-        print('selecting')
-        print(self)
-        print(characters)
         print('Registered characters:\n')
         {print(f'{number + 1} - {character["name"]}')
          for number, character in enumerate(characters)}
         selected_number = input('\nSelect a character (default random): ')
         if not selected_number:
             print('has selected random')
-            self.properties = random.choice(characters)
+            self.set_character_properties(random.choice(characters))
             return
         if not selected_number.isdigit():
             raise ValueError('Invalid input')
@@ -44,6 +41,8 @@ class Character:
         self.set_character_properties(selected_character)
 
     def get_description(self):
+        print('get_description')
+        print(self.name)
         return f"""
         {self.name} is a {self.age} years old {self.gender}, is a {self.job}, is {self.appearance}, 
         is always {self.mood} and treats all people {self.behavior}.

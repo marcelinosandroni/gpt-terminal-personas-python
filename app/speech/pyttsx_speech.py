@@ -1,10 +1,11 @@
 from speech import Speech
 import pyttsx3
 
+
 class PyttsxSpeech(Speech):
     engine: pyttsx3.Engine
 
-    def __init__(self)
+    def __init__(self):
         self.engine = pyttsx3.init()
 
     def say(self, text: str):
